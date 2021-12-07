@@ -1,0 +1,44 @@
+Code:
+
+---------------------------------------------------
+
+ 1 int get_two_vars(int sock, char *out, int len) {
+ 2    char buf1[512], buf2[512];
+ 3    unsigned int size1, size2;
+ 4    int size;
+ 5 
+ 6    if(recv(sock, buf1, sizeof(buf1), 0) < 0) {
+ 7       return -1;
+ 8    }
+ 9
+10    if(recv(sock, buf2, sizeof(buf2), 0) < 0) {
+11       return -1;
+12    }
+13
+14    /* packet begins with length information */
+15    memcpy(&size1, buf1, sizeof(int));
+16    memcpy(&size2, buf2, sizeof(int));
+17    size = size1 + size2;
+18 
+19    if(size > len) {
+20       return -1;
+21    }
+22
+23    memcpy(out, buf1, size1);
+24    memcpy(out + size1, buf2, size2);
+25
+26    return size;
+27 }
+
+---------------------------------------------------
+
+The issue with this piece of code is the addition
+operation on line 17 and then the if statement on
+line 19.  Since both size1 and size2 are unsigned
+integers and they are being added without a check,
+this can lead to a integer overflow error if both
+values are large enough.
+
+To fix this, I would check if the sum of the two
+numbers is not less then one of the numbers like
+the following: !(size1 + size2 < size1)

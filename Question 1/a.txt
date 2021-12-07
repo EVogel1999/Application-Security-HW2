@@ -1,0 +1,24 @@
+Code:
+
+------------------------------------------------
+
+ 1 int table[800];
+ 2
+ 3 int insert_in_table(int val, int pos) {
+ 4    if(pos > sizeof(table) / sizeof(int)) {
+ 5       return -1;
+ 6    }
+ 7
+ 8    table[pos] = val;
+ 9    return 0;
+10 }
+
+------------------------------------------------
+
+The vulnerability here has to do with the
+variable 'pos'. There is no check for if pos is
+negative.  This could lead to an error when
+assigning val into a negative position.
+
+For a fix, I would add a check to make
+sure pos is not negative.

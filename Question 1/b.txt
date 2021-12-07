@@ -1,0 +1,24 @@
+Code:
+
+------------------------------------------------
+
+1 int copy_something(char *buf, int len) {
+2    char kbuf[800];
+3 
+4    if(len > sizeof(kbuf)) {
+5       return -1;
+6    }
+7
+8    return memcpy(kbuf, buf, len);
+9 }
+
+------------------------------------------------
+
+The issue here is similar to the issue with part
+a.  The len parameter is not being checked for
+negative values, furthermore, this could cause
+an integer error in the memcpy function because
+the parameter where len is takes an unsigned int
+not a signed int.
+
+For a fix, I would add a check for negative len.

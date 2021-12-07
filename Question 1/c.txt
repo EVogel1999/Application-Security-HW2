@@ -1,0 +1,31 @@
+Code:
+
+------------------------------------------------
+
+ 1 int myfunction(int *array, int len) {
+ 2    int *myarray, i;
+ 3    myarray = malloc(len * sizeof(int));
+ 4
+ 5    if(myarray == NULL) {
+ 6       return -1;
+ 7    }
+ 8
+ 9    for(i = 0; i < len; i++) {
+10       myarray[i] = array[i];
+11    }
+12
+13    return myarray;
+14 }
+
+------------------------------------------------
+
+The problem with this particular code is the
+lack of checking for the len parameter.  At line
+3, a malloc is performed which takes len and
+multiplies it by the size of int.  Since this
+goes unchecked, the loop could write past the
+array length, which would result in an overflow.
+
+For a fix, I would check for reasonable lengths
+of len, also making sure that negative len is
+not passed in.

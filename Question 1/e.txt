@@ -1,0 +1,43 @@
+Code:
+
+---------------------------------------------------------------------------------
+
+ 1 int rsbac_acl_sys_group( enum rsbac_acl_group_syscall_type_t call, union 
+ 2 rsbac_acl_group_syscall_arg_t arg) {
+ 3    ...
+ 4    switch(call) {
+ 5       case ACLGS_get_group_members:
+ 6           if ((arg.get_group_members.maxnum<=0) ||
+ 7              !arg.get_group_members.group) {
+ 8
+ 9              ...
+10
+11              rsbac_uid_t * user_array;
+12              rsbac_time_t * ttl_array;
+13              user_array = vmalloc(sizeof(*user_array) *
+14                 arg.get_group_members.maxnum);
+15
+16              if (!user_array)
+17                 return -RSBAC_ENOMEM;
+18
+20              ttl_array = vmalloc(sizeof(*ttl_array) *
+21                 arg.get_group_members.maxnum);
+22
+23              if(!ttl_array) {
+24                 vfree(user_array);
+25                 return -RSBAC_ENOMEM;
+26              }
+27
+28              err = rsbac_acl_get_group_members(arg.get_group_members.group,
+29                 user_array, ttl_array, arg.get_group_members.max num);
+30
+31    ...
+32 }
+
+---------------------------------------------------------------------------------
+
+The issue with this code is that for the first if statement that checks for a valid maxnum variable it does not account for integer error.  Meaning if a number inputted for that variable was high enough then it would appear negative in the check.  This is important because of the vmalloc functions which use the variable could be requesting more memory then necessary or then its expecting.
+
+To fix this, I would add a check for the 'arg.get_group_members.maxnum' variable was of a very large number and check if it causes a integer overflow.  Possibly by adding the following to the if statement:
+
+arg.get_group_members.maxnum < arg.get_group_members.maxnum
