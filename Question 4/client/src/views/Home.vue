@@ -11,7 +11,9 @@
       <div class="column">
         <h3 class="title has-text-white">Messages</h3>
         <div v-for="message in messages" :key="message.id" class="box">
-          <p v-html="message.message"></p>
+          <!-- THIS IS UNSAFE -->
+          <!-- <p v-html="message.message"></p> -->
+          <p>{{ message.message }}</p>
         </div>
       </div>
     </div>
