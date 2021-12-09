@@ -10,17 +10,19 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: true }));
 
-// Login route
-app.post('/login', async (req, res) => {
+// Messages routes
+app.post('/messages', async (req, res) => {
     try {
-        const safe = req.query.safe;
-
-        let result;
-        if (safe === 'true') {
-            result = await new Database().safeLogin(req.body.username, req.body.password);
-        } else {
-            result = await new Database().unsafeLogin(req.body.username, req.body.password);
-        }
+        await new Database().createMessage(req.body.message);
+        res.sendStatus(201);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e);
+    }
+});
+app.get('/messages', async (req, res) => {
+    try {
+        const result = await new Database().getMessages();
         res.status(200).send(result);
     } catch (e) {
         console.error(e);

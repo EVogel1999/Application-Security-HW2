@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const uuidv4 = require('uuid').v4;
 
 class Database {
     static connection;
@@ -31,60 +32,42 @@ class Database {
             if (error) throw error;
         });
         Database.connection.query(
-            `CREATE TABLE IF NOT EXISTS users(username VARCHAR(20) NOT NULL, password VARCHAR(20) NOT NULL)`,
+            `CREATE TABLE IF NOT EXISTS messages(id VARCHAR(36) NOT NULL, message VARCHAR(300) NOT NULL)`,
             (error, results, fields) => {
                 if (error) throw error;
-
-                // Populate dummy data
-                Database.connection.query(
-                    `INSERT INTO users (username, password) VALUES ('mock1', 'password1')`,
-                    (error, results, fields) => {
-                        if (error) throw error;
-                    }
-                );
-                Database.connection.query(
-                    `INSERT INTO users (username, password) VALUES ('mock2', 'password2')`,
-                    (error, results, fields) => {
-                        if (error) throw error;
-                    }
-                );
             }
         );
     }
 
     /**
-     * Performs an unsafe login, vulnerable to SQL injection
+     * Creates a new message to the message board
      * 
-     * @param {*} username user's username
-     * @param {*} password user's password
-     * @returns Promise of user
+     * @param {*} message the new message to create
      */
-    unsafeLogin(username, password) {
+    createMessage(message) {
         return new Promise((resolve, reject) => {
             Database.connection.query(
-                `SELECT * FROM users WHERE username='${username}' AND password='${password}'`,
-                (error, results, fields) => {
+                `INSERT INTO messages (id, message) VALUES (?, ?)`, [uuidv4(), message],
+                (error, results) => {
                     if (error) reject(error);
-                    resolve(results[0]);
+                    resolve();
                 }
-            );
+            )
         });
     }
 
     /**
-     * Performs an safe login, not vulnerable to SQL injection
+     * Gets all the messages in the db
      * 
-     * @param {*} username user's username
-     * @param {*} password user's password
-     * @returns Promise of user
+     * @returns a list of messages
      */
-    safeLogin(username, password) {
+    getMessages() {
         return new Promise((resolve, reject) => {
             Database.connection.query(
-                `SELECT * FROM users WHERE username=? AND password=?`, [username, password],
+                `SELECT * FROM messages`,
                 (error, results) => {
                     if (error) reject(error);
-                    resolve(results[0]);
+                    resolve(results);
                 }
             )
         });

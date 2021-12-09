@@ -8,19 +8,28 @@ const API_URL = process.env.VUE_APP_API_URL;
 
 export default new Vuex.Store({
   state: {
-    user: undefined as any,
+    messages: [] as string[]
   },
   mutations: {
-    setUser(state, user) {
-      state.user = user;
+    setMessages(state, messages) {
+      state.messages = messages;
     },
   },
   actions: {
-    async login({ commit }, payload: { username: string, password: string, safe: boolean },) {
+    async createMessage({ dispatch }, payload: { message: string },) {
       try {
-        const res = await axios.post(`${API_URL}/login?safe=${payload.safe}`, { username: payload.username, password: payload.password });
+        const res = await axios.post(`${API_URL}/messages`, { message: payload.message });
         if (!res.data) throw new Error('Incorrect Login');
-        commit('setUser', res.data);
+        await dispatch('getMessages');
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    },
+    async getMessages({ commit }) {
+      try {
+        const res = await axios.get(`${API_URL}/messages`);
+        commit('setMessages', res.data);
       } catch (e) {
         console.error(e);
         throw e;

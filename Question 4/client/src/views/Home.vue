@@ -1,35 +1,17 @@
 <template>
   <div class="hero is-fullheight is-primary">
-    <div class="hero-body">
-      <div class="container">
-        <h3 class="title has-text-white">Login</h3>
+    <div class="hero-body is-2">
+      <div class="column is-one-quarter">
+        <h3 class="title has-text-white">Post Message</h3>
         <div class="box">
-          <div class="field">
-            <label class="label">Username</label>
-            <div class="control">
-              <input class="input" v-model="username" placeholder="username">
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Password</label>
-            <div class="control">
-              <input class="input" v-model="password" type="password" placeholder="********">
-            </div>
-          </div>
-
-          <div class="control block">
-            <label class="radio">
-              <input type="radio" name="vulnerable" @change="safe = false" :checked="!safe">
-              SQL Injection Vulnerability
-            </label>
-            <label class="radio">
-              <input type="radio" name="invulnerable" @change="safe = true" :checked="safe">
-              No Vulnerability
-            </label>
-          </div>
-
-          <button class="button is-primary" @click="login">Sign in</button>
+          <textarea v-model="message"></textarea>
+          <button class="button is-primary" @click="postMessage()">Post</button>
+        </div>
+      </div>
+      <div class="column">
+        <h3 class="title has-text-white">Messages</h3>
+        <div v-for="message in messages" :key="message.id" class="box">
+          <p v-html="message.message"></p>
         </div>
       </div>
     </div>
@@ -41,13 +23,28 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Home extends Vue {
-  username = '';
-  password = '';
-  safe = false;
+  message = '';
 
-  async login() {
-    await this.$store.dispatch('login', { username: this.username, password: this.password, safe: this.safe });
-    this.$router.push('about');
+  mounted() {
+    this.$store.dispatch('getMessages');
+  }
+
+  get messages() {
+    return this.$store.state.messages;
+  }
+
+  async postMessage() {
+    await this.$store.dispatch('createMessage', { message: this.message });
+    this.message = '';
   }
 }
 </script>
+
+<style lang="scss" scoped>
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+  margin-bottom: 10px;
+}
+</style>
