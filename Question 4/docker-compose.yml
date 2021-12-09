@@ -45,6 +45,14 @@ services:
       - 8081:80
     networks:
       - question-4-net
+  
+  forged-site:
+    build:
+      context: ./forged-site
+    ports:
+      - 4200:80
+    networks:
+      - question-4-net
 
 networks:
   question-4-net:
