@@ -10,12 +10,16 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: password
+    networks:
+      - question-3-net
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - question-3-net
 
   server:
     build:
@@ -28,3 +32,20 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - question-3-net
+  
+  client:
+    build:
+      context: ./client
+    depends_on:
+      - server
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - question-3-net
+
+networks:
+  question-3-net:
+    driver: bridge
