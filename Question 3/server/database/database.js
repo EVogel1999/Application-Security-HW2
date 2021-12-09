@@ -9,10 +9,9 @@ class Database {
     static createConnection() {
         // Create connection
         Database.connection = mysql.createConnection({
-            host: 'localhost',
+            host: process.env.HOST ? process.env.HOST : 'localhost',
             user: 'root',
             password: 'password',
-            database: 'mydb'
         });
         Database.connection.connect();
 
@@ -26,6 +25,9 @@ class Database {
     static createDummyDatabase() {
         // Create initial database and table
         Database.connection.query(`CREATE DATABASE IF NOT EXISTS mydb`, (error, results, fields) => {
+            if (error) throw error;
+        });
+        Database.connection.query(`USE mydb`, (error, results, fields) => {
             if (error) throw error;
         });
         Database.connection.query(
@@ -50,6 +52,13 @@ class Database {
         );
     }
 
+    /**
+     * Performs an unsafe login, vulnerable to SQL injection
+     * 
+     * @param {*} username user's username
+     * @param {*} password user's password
+     * @returns Promise of user
+     */
     unsafeLogin(username, password) {
         return new Promise((resolve, reject) => {
             Database.connection.query(
@@ -62,6 +71,13 @@ class Database {
         });
     }
 
+    /**
+     * Performs an safe login, not vulnerable to SQL injection
+     * 
+     * @param {*} username user's username
+     * @param {*} password user's password
+     * @returns Promise of user
+     */
     safeLogin(username, password) {
         return new Promise((resolve, reject) => {
             Database.connection.query(
