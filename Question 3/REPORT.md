@@ -32,12 +32,12 @@ To log in without knowing any user's username, we simply need to run the followi
 ```
 
 Screenshot:
-![Unsafe Login](/img/Screen%20Shot%202021-12-09%20at%202.34.08%20PM.png)
+![Unsafe Login](./img/Screen%20Shot%202021-12-09%20at%202.34.08%20PM.png)
 
 This logs us in as the first user the query gets back.
 
 Screenshot:
-![SQL Injection User Page](/img/Screen%20Shot%202021-12-09%20at%202.34.15%20PM.png)
+![SQL Injection User Page](./img/Screen%20Shot%202021-12-09%20at%202.34.15%20PM.png)
 
 # Demonstrating the Fix
 
@@ -71,4 +71,4 @@ Instead of inputting the query directly, we replace what we would like to use pr
 This makes the route unable to be affected by SQL injection as both parameters are prepared prior to query.  Notice in the screenshot the same query that worked on the vulnerable login now does not work and an error displays in the console.
 
 Screenshot:
-![Failed SQL Injection](/img/Screen%20Shot%202021-12-09%20at%202.34.41%20PM.png)
+![Failed SQL Injection](./img/Screen%20Shot%202021-12-09%20at%202.34.41%20PM.png)
