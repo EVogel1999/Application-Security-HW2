@@ -14,6 +14,12 @@ Please note that the following ports must be open to run the app:
 - 8080 (Adminer)
 - 8081 (Client)
 
+To run type the following command in your terminal from this directory. Note you may need to delete older images if there are issues. You may also want to run the client in an incognito window just to make sure the site isn't loading a cached site:
+
+```
+docker compose up
+```
+
 ## Database
 
 The Database is a MySQL database (installed via docker) that has one database, 'mydb', and one table, 'users'.  The database is populated with the following data when the server starts:
