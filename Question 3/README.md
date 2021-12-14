@@ -20,6 +20,13 @@ To run type the following command in your terminal from this directory. Note you
 docker compose up
 ```
 
+If you have issues running please check that the ports are clear.  If there are still issues you might need to prune the docker system and volumes.  You can force this by running the following (**note these commands will delete ALL images, containers and volumes**):
+
+```
+docker system prune -af
+docker volume prune
+```
+
 ## Database
 
 The Database is a MySQL database (installed via docker) that has one database, 'mydb', and one table, 'users'.  The database is populated with the following data when the server starts:
